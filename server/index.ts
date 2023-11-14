@@ -1,15 +1,12 @@
-import * as dotenv from 'dotenv'
-import express from 'express'
-import { Express, Request, Response } from 'express'
-import axios from 'axios'
+const express = require("express");
+const axios = require("axios");
 
-const app: Express = express()
+const app: any = express()
 const PORT: number = 4321
 const cors = require('cors')
 const path = require('path')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
-dotenv.config()
 app.use(express.json())
 
 app.listen(PORT, () => {
@@ -20,13 +17,13 @@ app.use(cors({ origin: 'http://localhost:5173', optionsSuccessStatus: 200 }))
 
 app.use(express.static(path.join(__dirname, '../../client/dist')))
 
-app.get('/:route(Trade|Login|Portfolio)', (req: Request, res: Response) => {
+app.get('/:route(Trade|Login|Portfolio)', (req: any, res: any) => {
   res.sendFile(path.join(__dirname, '../../client/dist', 'index.html'))
 })
 
 app.get(
   '/api/stock/search/:stockSearchInput',
-  async (req: Request, res: Response) => {
+  async (req: any, res: any) => {
     try {
       const { stockSearchInput } = req.params
 
@@ -45,7 +42,7 @@ app.get(
 
 app.get(
   '/api/stock/price/:stockSymbol',
-  async (req: Request, res: Response) => {
+  async (req: any, res: any) => {
     try {
       const { stockSymbol } = req.params
 
@@ -62,7 +59,7 @@ app.get(
   }
 )
 
-app.get('/api/marketNews', async (req: Request, res: Response) => {
+app.get('/api/marketNews', async (req: any, res: any) => {
   try {
     const response = await axios.get(
       `https://finnhub.io/api/v1/news?category=general&token=${process.env.FINHUB_API_KEY}`
@@ -85,11 +82,14 @@ const client = new Client({
   user: 'postgres',
   port: 5432,
   database: 'postgres',
+  ssl: {
+    rejectUnauthorized: false
+  }
 })
 
 client.connect()
 
-app.post(`/api/trade/:inSellState`, async (req: Request, res: Response) => {
+app.post(`/api/trade/:inSellState`, async (req: any, res: any) => {
   try {
     const { inSellState } = req.params
 
@@ -144,7 +144,7 @@ app.post(`/api/trade/:inSellState`, async (req: Request, res: Response) => {
   }
 })
 
-app.post('/api/signup', async (req: Request, res: Response) => {
+app.post('/api/signup', async (req: any, res: any) => {
   try {
     const { user_email, user_password } = req.body
 
@@ -178,7 +178,7 @@ app.post('/api/signup', async (req: Request, res: Response) => {
   }
 })
 
-app.post('/api/login', async (req: Request, res: Response) => {
+app.post('/api/login', async (req: any, res: any) => {
   try {
     const { user_email, user_password } = req.body
 
@@ -202,7 +202,7 @@ app.post('/api/login', async (req: Request, res: Response) => {
   }
 })
 
-app.post(`/api/get_cash/`, async (req: Request, res: Response) => {
+app.post(`/api/get_cash/`, async (req: any, res: any) => {
   try {
     const { userId } = req.body
 
@@ -222,7 +222,7 @@ app.post(`/api/get_cash/`, async (req: Request, res: Response) => {
   }
 })
 
-app.post(`/api/stock_data/`, async (req: Request, res: Response) => {
+app.post(`/api/stock_data/`, async (req: any, res: any) => {
   type stockType = {
     tableData: {}
     sumData: {
